@@ -57,5 +57,23 @@
     {% endfor %}
     </tbody>
 </table>
+<!-- Pagination -->
+<div class="pagination">
+    <span class="step-links">
+        {% if employees.has_previous %}
+            <a href="?page=1">&laquo; первая</a>
+            <a href="?page={{ employees.previous_page_number }}">предыдущая</a>
+        {% endif %}
+
+        <span class="current">
+            Страница {{ employees.number }} из {{ employees.paginator.num_pages }}.
+        </span>
+
+        {% if employees.has_next %}
+            <a href="?page={{ employees.next_page_number }}">следующая</a>
+            <a href="?page={{ employees.paginator.num_pages }}">последняя &raquo;</a>
+        {% endif %}
+    </span>
+</div>
 </body>
 </html>
