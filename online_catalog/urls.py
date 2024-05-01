@@ -16,7 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from employees import views as e_v
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("tree", e_v.show_tree, name='tree')
 ]

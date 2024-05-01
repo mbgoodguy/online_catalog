@@ -1,30 +1,50 @@
+from random import randint
+
+from django.core.exceptions import ValidationError
 from django.db import models
-from django.utils import timezone
 
 
 class Employee(models.Model):
     class Position(models.TextChoices):
-        SOFTWARE_DEVELOPER = 'SD', 'Разработчик ПО (Software Developer)'
-        SOFTWARE_TEST_ENGINEER = 'STE', 'Инженер по тестированию программного обеспечения (Software Test Engineer)'
-        SOFTWARE_ARCHITECT = 'SA', 'Архитектор программного обеспечения (Software Architect)'
-        TECHNICAL_WRITER = 'TW', 'Технический писатель (Technical Writer)'
-        PRODUCT_MANAGER = 'PM', 'Продуктовый менеджер (Product Manager)'
-        PROJECT_MANAGER = 'PJM', 'Менеджер проекта (Project Manager)'
-        BUSINESS_ANALYST = 'BA', 'Аналитик бизнес-требований (Business Analyst)'
-        UX_UI_DESIGNER = 'UXUI', 'UX/UI дизайнер (UX/UI Designer)'
-        DEVOPS_ENGINEER = 'DEVOPS', 'DevOps инженер (DevOps Engineer)'
-        SYSTEM_ADMINISTRATOR = 'SYSADM', 'Системный администратор (System Administrator)'
-        SOFTWARE_SUPPORT_ENGINEER = 'SSE', 'Инженер сопровождения ПО (Software Support Engineer)'
-        DATA_ANALYST = 'DA', 'Аналитик данных (Data Analyst)'
-        INFOSEC_ENGINEER = 'INFOSEC', 'Инженер информационной безопасности (Information Security Engineer)'
-        TEST_AUTOMATION_ENGINEER = 'TAE', 'Специалист по автоматизации тестирования (Test Automation Engineer)'
-        DEPLOYMENT_ENGINEER = 'DE', 'Инженер по развертыванию (Deployment Engineer)'
+        SOFTWARE_DEVELOPER = 'SD', 'Software Developer'
+        SOFTWARE_TEST_ENGINEER = 'STE', 'Software Test Engineer'
+        SOFTWARE_ARCHITECT = 'SA', 'Software Architect'
+        TECHNICAL_WRITER = 'TW', 'Technical Writer'
+        PRODUCT_MANAGER = 'PM', 'Product Manager'
+        PROJECT_MANAGER = 'PJM', 'Project Manager'
+        BUSINESS_ANALYST = 'BA', 'Business Analyst'
+        UX_UI_DESIGNER = 'UXUI', 'UX/UI Designer'
+        DEVOPS_ENGINEER = 'DEVOPS', 'DevOps Engineer'
+        SYSTEM_ADMINISTRATOR = 'SYSADM', 'System Administrator'
+        SOFTWARE_SUPPORT_ENGINEER = 'SSE', 'Software Support Engineer'
+        DATA_ANALYST = 'DA', 'Data Analyst'
+        INFOSEC_ENGINEER = 'INFOSEC', 'Information Security Engineer'
+        TEST_AUTOMATION_ENGINEER = 'TAE', 'Test Automation Engineer'
+        DEPLOYMENT_ENGINEER = 'DE', 'Deployment Engineer'
 
     full_name = models.CharField(max_length=100)
-    position = models.CharField(max_length=7, choices=Position.choices)
+    position = models.CharField(max_length=50, choices=Position.choices)
     date_of_employment = models.DateField(auto_now_add=True)
-    supervisor = models.OneToOneField('self', on_delete=models.CASCADE, null=True, blank=True)
+    supervisor = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='subordinates')
     salary_in_dollars = models.IntegerField(default=0)
 
     def __str__(self):
         return self.full_name
+
+    def clean(self):
+        if self.supervisor == self:
+            raise ValidationError("Сотрудник не может быть своим собственным руководителем.")
+
+    # Расскомментировать после добавления первого сотрудника в админке.
+    # def save(self, *args, **kwargs):
+    #     if self.supervisor is None:
+    #         # Если руководитель пустой, назначаем случайного сотрудника
+    #         self.supervisor = self.get_random_employee_excluding_self()
+    #     super().save(*args, **kwargs)
+    #
+    # def get_random_employee_excluding_self(self):
+    #     # Получить случайного сотрудника, исключая текущего
+    #     all_employees_count = Employee.objects.exclude(id=self.id).count()
+    #     random_index = randint(0, all_employees_count - 1)
+    #     random_employee = Employee.objects.exclude(id=self.id)[random_index]
+    #     return random_employee
