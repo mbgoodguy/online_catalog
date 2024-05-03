@@ -24,7 +24,7 @@ class Command(BaseCommand):
             ),
             'salary_in_dollars': lambda x: random.randint(500, 3000),
             'parent': lambda x: random.choice(existing_employees),
-            'level': random.randint(0, 6)
+            'level': lambda x: 0,
         })
 
         inserted_pks = seeder.execute()

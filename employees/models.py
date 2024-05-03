@@ -1,5 +1,8 @@
+from random import randint
+
 from django.core.exceptions import ValidationError
 from django.db import models
+from faker.generator import random
 from mptt.models import MPTTModel
 
 
@@ -21,11 +24,22 @@ class Employee(MPTTModel):
         TEST_AUTOMATION_ENGINEER = 'TAE', 'Test Automation Engineer'
         DEPLOYMENT_ENGINEER = 'DE', 'Deployment Engineer'
 
+        @classmethod
+        def get_random_position(cls):
+            positions = [getattr(cls, attr) for attr in dir(cls) if not attr.startswith('__')]
+            return random.choice(positions)
+
     full_name = models.CharField(max_length=100)
     position = models.CharField(max_length=50, choices=Position.choices)
     date_of_employment = models.DateField(auto_now_add=True)
     parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='subordinates')
     salary_in_dollars = models.IntegerField(default=0)
+    employee_img = models.ImageField(
+        blank=True,
+        upload_to='images/%Y/%m/%d',
+        help_text='96x96px',
+        verbose_name='employee_photo'
+    )
 
     def __str__(self):
         return f'{self.full_name}: {self.position}'
@@ -38,15 +52,21 @@ class Employee(MPTTModel):
         order_insertion_by = ['full_name']
 
     # Расскомментировать после добавления первого сотрудника в админке.
-    # def save(self, *args, **kwargs):
-    #     if self.supervisor is None:
-    #         # Если руководитель пустой, назначаем случайного сотрудника
-    #         self.supervisor = self.get_random_employee_excluding_self()
-    #     super().save(*args, **kwargs)
-    #
-    # def get_random_employee_excluding_self(self):
-    #     # Получить случайного сотрудника, исключая текущего
-    #     all_employees_count = Employee.objects.exclude(id=self.id).count()
-    #     random_index = randint(0, all_employees_count - 1)
-    #     random_employee = Employee.objects.exclude(id=self.id)[random_index]
-    #     return random_employee
+    def save(self, *args, **kwargs):
+        if self.parent is None:
+            # Если родитель не указан, назначаем случайного руководителя
+            all_employees = Employee.objects.exclude(id=self.id)
+            self.parent = random.choice(all_employees)
+
+        if self.position is None:
+            # Если позиция не указана, назначаем случайную позицию
+            self.position = self.Position.get_random_position()
+
+        super().save(*args, **kwargs)
+
+    def get_random_employee_excluding_self(self):
+        # Получить случайного сотрудника, исключая текущего
+        all_employees_count = Employee.objects.exclude(id=self.id).count()
+        random_index = randint(0, all_employees_count - 1)
+        random_employee = Employee.objects.exclude(id=self.id)[random_index]
+        return random_employee

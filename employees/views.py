@@ -23,7 +23,7 @@ from employees.models import Employee
 #     return render(request, 'tree.html', context)
 
 
-def show_tree_mptt(request):
+def show_employees_table(request):
     employees = Employee.objects.all()
     current_page = Paginator(list(employees), 20)
     page = request.GET.get('page')  # Получаем параметр 'page' из GET-запроса
@@ -39,4 +39,4 @@ def show_tree_mptt(request):
         # Если номер страницы выходит за пределы допустимых значений, показываем последнюю страницу
         context['employees'] = current_page.page(current_page.num_pages)
 
-    return render(request, 'employees_mptt.html', context)
+    return render(request, 'employees_table.html', context)

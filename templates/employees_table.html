@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load mptt_tags %}
+
+{% block body %}
+<div class="container">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>ФИО</th>
+            <th>Должность</th>
+            <th>Дата приема на работу</th>
+            <th>Заработная плата</th>
+            <th>Фото</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for employee in employees %}
+            <tr>
+                <td>{{ employee.full_name }}</td>
+                <td>{{ employee.position }}</td>
+                <td>{{ employee.date_of_employment }}</td>
+                <td>{{ employee.salary_in_dollars }}</td>
+                {% if employee.employee_img %}
+                    <td><img src="{{ employee.employee_img.url }}" alt="Employee Photo"></td>
+                {% else %}
+                    <td>Фото отсутствует</td>
+                {% endif %}
+            </tr>
+            {% if not employee.is_leaf_node %}
+                <!-- Выводите подчиненных сотрудников внутри этой же таблицы -->
+            {% endif %}
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="pagination">
+            <span class="step-links">
+                {% if employees.has_previous %}
+                    <a href="?page=1">&laquo; первая</a>
+                    <a href="?page={{ employees.previous_page_number }}">предыдущая</a>
+                {% endif %}
+
+                <span class="current">
+                    Страница {{ employees.number }} из {{ employees.paginator.num_pages }}.
+                </span>
+
+                {% if employees.has_next %}
+                    <a href="?page={{ employees.next_page_number }}">следующая</a>
+                    <a href="?page={{ employees.paginator.num_pages }}">последняя &raquo;</a>
+                {% endif %}
+            </span>
+    </div>
+</div>
+{% endblock %}

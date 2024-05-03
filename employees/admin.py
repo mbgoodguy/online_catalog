@@ -5,7 +5,7 @@ from employees.models import Employee
 
 
 class EmployeeAdmin(MPTTModelAdmin):
-    fields = ('full_name', 'position', 'date_of_employment', 'parent', 'salary_in_dollars',)
+    fields = ('full_name', 'position', 'date_of_employment', 'parent', 'salary_in_dollars', 'employee_img')
     readonly_fields = ('date_of_employment',)
     raw_id_fields = ('parent',)  #
     search_fields = ('full_name',)  # параметр для поиска в окне выбора руководителя
