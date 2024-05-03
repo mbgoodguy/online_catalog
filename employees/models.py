@@ -1,10 +1,9 @@
-from random import randint
-
 from django.core.exceptions import ValidationError
 from django.db import models
+from mptt.models import MPTTModel
 
 
-class Employee(models.Model):
+class Employee(MPTTModel):
     class Position(models.TextChoices):
         SOFTWARE_DEVELOPER = 'SD', 'Software Developer'
         SOFTWARE_TEST_ENGINEER = 'STE', 'Software Test Engineer'
@@ -25,15 +24,18 @@ class Employee(models.Model):
     full_name = models.CharField(max_length=100)
     position = models.CharField(max_length=50, choices=Position.choices)
     date_of_employment = models.DateField(auto_now_add=True)
-    supervisor = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='subordinates')
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='subordinates')
     salary_in_dollars = models.IntegerField(default=0)
 
     def __str__(self):
-        return self.full_name
+        return f'{self.full_name}: {self.position}'
 
     def clean(self):
-        if self.supervisor == self:
+        if self.parent == self:
             raise ValidationError("Сотрудник не может быть своим собственным руководителем.")
+
+    class MPTTMeta:
+        order_insertion_by = ['full_name']
 
     # Расскомментировать после добавления первого сотрудника в админке.
     # def save(self, *args, **kwargs):
