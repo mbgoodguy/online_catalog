@@ -14,7 +14,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         seeder = Seed.seeder()
 
-        seeder.add_entity(Employee, 10, {
+        seeder.add_entity(Employee, 50000, {
             'full_name': lambda x: seeder.faker.name(),
             'position': lambda x: random.choice([pos for pos in Employee.Position.choices])[1],
             'date_of_employment': lambda x: seeder.faker.date_between(

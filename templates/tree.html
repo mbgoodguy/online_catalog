@@ -33,7 +33,7 @@
         <th>Дата приема на работу</th>
         <th>Заработная плата</th>
         <th>Руководитель</th>
-        <th>Подчиненные</th>
+        <!--<th>Подчиненные</th>-->
     </tr>
     </thead>
     <tbody>
@@ -44,7 +44,7 @@
             <td>{{ employee.date_of_employment }}</td>
             <td>{{ employee.salary_in_dollars }}</td>
             <td>{% if employee.supervisor %}{{ employee.supervisor.full_name }}{% endif %}</td>
-            <td>
+            <!--<td>
                 {% if employee.subordinate.exists %}
                     <ul>
                         {% for subordinate in employee.subordinate.all %}
@@ -52,7 +52,7 @@
                         {% endfor %}
                     </ul>
                 {% endif %}
-            </td>
+            </td>-->
         </tr>
     {% endfor %}
     </tbody>

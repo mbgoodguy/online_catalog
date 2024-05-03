@@ -10,4 +10,5 @@ class EmployeeAdmin(admin.ModelAdmin):
     raw_id_fields = ('supervisor', )  #
     search_fields = ('full_name', )  # параметр для поиска в окне выбора руководителя
     list_filter = ('position', 'supervisor', )
+    list_per_page = 10
 

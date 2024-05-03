@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "employees",
     "django_seed",
-    "django_extensions"
+    "django_extensions",
+    "mptt"
 ]
 
 MIDDLEWARE = [
