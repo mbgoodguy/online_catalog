@@ -21,13 +21,14 @@
                 <td>{{ employee.date_of_employment }}</td>
                 <td>{{ employee.salary_in_dollars }}</td>
                 {% if employee.employee_img %}
-                    <td><img src="{{ employee.employee_img.url }}" alt="Employee Photo"></td>
+                    <td class="employee-photo">
+                        <img src="{{ employee.employee_img.url }}" alt="Employee Photo" style="width: 64px; height: auto;">
+                    </td>
                 {% else %}
                     <td>Фото отсутствует</td>
                 {% endif %}
             </tr>
             {% if not employee.is_leaf_node %}
-                <!-- Выводите подчиненных сотрудников внутри этой же таблицы -->
             {% endif %}
         {% endfor %}
         </tbody>
