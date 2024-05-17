@@ -64,6 +64,7 @@ class Employee(MPTTModel):
 
         super().save(*args, **kwargs)
 
+    # Расскомментировать после добавления первого сотрудника в админке.
     def get_random_employee_excluding_self(self):
         # Получить случайного сотрудника, исключая текущего
         all_employees_count = Employee.objects.exclude(id=self.id).count()

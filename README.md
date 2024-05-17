@@ -4,7 +4,7 @@
   - `python manage.py makemigrations`
   - `python manage.py migrate`
 
-- В админке создать первого юзера
+- В админке необходимо создать первого юзера, чтобы скрипт наполнения БД сработал
 - В `employees/views.py` раскомменитровать методы `save` и `get_random_employee_excluding_self`
 
 
